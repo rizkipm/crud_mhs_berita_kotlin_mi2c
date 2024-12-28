@@ -1,6 +1,8 @@
 package com.rizki.crud_mhs_berita_mi2a
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.rizki.crud_mhs_berita_mi2a.adapter.BeritaAdapter
 import com.rizki.crud_mhs_berita_mi2a.model.ModelBerita
 import com.rizki.crud_mhs_berita_mi2a.model.ResponseBerita
+import com.rizki.crud_mhs_berita_mi2a.screen.TambahDataUserScreenActivity
 import com.rizki.crud_mhs_berita_mi2a.service.ApiClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recycleview: RecyclerView
     private lateinit var call: Call<ResponseBerita>
     private lateinit var beritaAdapter: BeritaAdapter
+    private lateinit var btnTambahData : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,14 @@ class MainActivity : AppCompatActivity() {
 
         swipRefresh = findViewById(R.id.refresh_layout)
         recycleview = findViewById(R.id.rv_berita)
+        btnTambahData = findViewById(R.id.btnTambahData)
+
+        //ketika di klik ke page tambah data
+        btnTambahData.setOnClickListener(){
+            //mau pindah ke page tambah data
+            val toMain = Intent(this@MainActivity, TambahDataUserScreenActivity::class.java)
+            startActivity(toMain)
+        }
 
         beritaAdapter = BeritaAdapter { modelBerita: ModelBerita -> beritaOnClick(modelBerita) }
 
@@ -55,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getData() {
         swipRefresh.isRefreshing = true
-        call = ApiClient.beritaServices.getAllBerita()
+        call = ApiClient.retrofit.getAllBerita()
         call.enqueue(object : Callback<ResponseBerita> {
             override fun onResponse(
                 call: Call<ResponseBerita>,
